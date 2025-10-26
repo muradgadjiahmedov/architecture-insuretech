@@ -1,0 +1,48 @@
+# Task5 — GraphQL Schema for client-info (SDL)
+# Covers existing REST contract while reducing overfetching/round-trips.
+
+schema {
+  query: Query
+}
+
+# ---- Custom scalars (can be mapped to ISO-8601 strings) ----
+scalar Date
+scalar DateTime
+
+# ---- Core entities ----
+type Client {
+  id: ID!
+  name: String
+  age: Int
+
+  # Convenience nested fields to avoid multiple round-trips
+  documents(limit: Int, offset: Int, type: String): [Document!]!
+  relatives(limit: Int, offset: Int, relationType: String): [Relative!]!
+}
+
+type Document {
+  id: ID!
+  type: String
+  number: String
+  issueDate: Date
+  expiryDate: Date
+}
+
+type Relative {
+  id: ID!
+  relationType: String
+  name: String
+  age: Int
+}
+
+# ---- Root queries (map 1:1 to REST where needed) ----
+type Query {
+  # GET /clients/{id}
+  client(id: ID!): Client
+
+  # GET /clients/{id}/documents
+  clientDocuments(id: ID!, limit: Int, offset: Int, type: String): [Document!]!
+
+  # GET /clients/{id}/relatives
+  clientRelatives(id: ID!, limit: Int, offset: Int, relationType: String): [Relative!]!
+}

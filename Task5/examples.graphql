@@ -1,0 +1,41 @@
+# Примеры запросов для быстрого теста
+
+# 1) Профиль + документы + родственники
+query ClientCard($id: ID!) {
+  client(id: $id) {
+    id
+    name
+    age
+    documents(limit: 5) {
+      id
+      type
+      number
+    }
+    relatives(limit: 5) {
+      id
+      relationType
+      name
+    }
+  }
+}
+
+# 2) Только документы (эквивалент REST /clients/{id}/documents)
+query ClientDocuments($id: ID!, $limit: Int) {
+  clientDocuments(id: $id, limit: $limit) {
+    id
+    type
+    number
+    issueDate
+    expiryDate
+  }
+}
+
+# 3) Только родственники (эквивалент REST /clients/{id}/relatives)
+query ClientRelatives($id: ID!, $limit: Int) {
+  clientRelatives(id: $id, limit: $limit) {
+    id
+    relationType
+    name
+    age
+  }
+}
